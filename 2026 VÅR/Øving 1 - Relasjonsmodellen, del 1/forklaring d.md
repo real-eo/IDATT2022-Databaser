@@ -2,7 +2,7 @@
 
 **Fremmednøkler:**
 
-- **bygning.borettslag_id**: Bør **IKKE** være NULL. En bygning må alltid tilhøre et borettslag.
+- **bygning.borettslag_id**: Bør **IKKE** være NULL. En bygning må alltid tilhøre et borettslag. 
   
 - **leilighet.bygning_id**: Bør **IKKE** være NULL. En leilighet må alltid tilhøre en bygning.
 
