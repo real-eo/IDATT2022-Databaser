@@ -1,0 +1,19 @@
+Notater:
+σ (selection): filter rows that satisfy a predicate. Example: σ_{age > 30}(Person).
+π (projection): choose columns (attributes). Example: π_{name,age}(Person).
+⋈ (join): combine two relations by a condition. If no condition and attributes match, a natural join is implied; with a condition it’s a theta‑join: R ⋈_{cond} S.
+− (set difference): tuples in R but not in S.
+∪, ∩ : union, intersection.
+⟕, ⟖, ⟗ (outer joins): extensions to RA for left/right/full outer joins (not in classic/primitive RA but common in extended RA).
+ρ (rename): rename relation or attributes. Important differences between textbook RA and SQL/MySQL:
+RA is set‑based (no guaranteed order); SQL results are multisets (bags) by default and can be ordered with ORDER BY.
+Basic RA has no notion of NULL or three‑valued logic; SQL does, which affects predicates like IN/NOT IN.
+ORDER BY, LIMIT/OFFSET, aggregates and window functions are not part of classical RA (they are extensions).
+
+
+Oppgaver:
+a) π_{fornavn, etternavn}(FORFATTER)
+b) π_{forlag_id}(FORLAG) - π_{forlag_id}(σ_{forlag_id IS NOT NULL}(BOK))
+c) σ_{fode_aar < 1900}(FORFATTER)
+d) π_{forlag_navn, adresse}( FORLAG ⋈{FORLAG.forlag_id = BOK.forlag_id} σ{tittel = 'Sult'}(BOK) )
+e) π_{tittel}( (BOK ⋈{BOK.bok_id = BOK_FORFATTER.bok_id} BOK_FORFATTER) ⋈{BOK_FORFATTER.forfatter_id = FORFATTER.forfatter_id} σ_{etternavn='Hamsun'}(FORFATTER) )
