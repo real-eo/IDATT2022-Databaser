@@ -36,10 +36,12 @@ class Sluttattest {
   tekstmal : text
 }
 
+' Relasjoner
 Bedrift "1" -- "0..*" Oppdrag
 Kvalifikasjon "1" -- "0..*" Oppdrag
 Kandidat "0..*" -- "0..*" Kvalifikasjon
 Oppdrag "1" -- "0..1" Tildeling
 Kandidat "1" -- "0..*" Tildeling
 Tildeling "1" -- "0..1" Sluttattest
+
 @enduml
