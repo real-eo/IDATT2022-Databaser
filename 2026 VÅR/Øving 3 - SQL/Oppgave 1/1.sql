@@ -1,0 +1,3 @@
+SELECT *
+FROM borettslag
+WHERE etabl_aar BETWEEN 1975 AND 1985;
