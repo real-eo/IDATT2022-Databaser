@@ -1,0 +1,67 @@
+@startuml oppgave a
+hide circle
+skinparam linetype ortho
+
+entity "Kandidat" as Kandidat {
+	* kandidatnr : int
+	--
+	fornavn : varchar
+	etternavn : varchar
+	telefon : varchar
+	epost : varchar
+}
+
+entity "Bedrift" as Bedrift {
+	* orgnr : varchar
+	--
+	navn : varchar
+	telefon : varchar
+	epost : varchar
+}
+
+entity "Kvalifikasjon" as Kvalifikasjon {
+	* kvalifikasjonsnr : int
+	--
+	beskrivelse : varchar
+}
+
+entity "Oppdrag" as Oppdrag {
+	* oppdragsnr : int
+	--
+	startdato_plan : date
+	sluttdato_plan : date
+	orgnr : varchar <<FK>>
+	kvalifikasjonsnr : int <<FK>>
+}
+
+entity "KandidatKvalifikasjon" as KandidatKvalifikasjon {
+	* kandidatnr : int <<FK>>
+	* kvalifikasjonsnr : int <<FK>>
+}
+
+entity "Tildeling" as Tildeling {
+	* oppdragsnr : int <<FK>>
+	* kandidatnr : int <<FK>>
+	--
+	virkelig_startdato : date
+	virkelig_sluttdato : date
+	timer_arbeidet : decimal
+}
+
+entity "Sluttattest" as Sluttattest {
+	* attestnr : int
+	--
+	tekstmal : text
+	oppdragsnr : int <<FK>>
+	kandidatnr : int <<FK>>
+}
+
+Bedrift ||--o{ Oppdrag : har
+Kvalifikasjon ||--o{ Oppdrag : krever
+Kandidat ||--o{ KandidatKvalifikasjon : har
+Kvalifikasjon ||--o{ KandidatKvalifikasjon : kobles_til
+Kandidat ||--o{ Tildeling : tildeles
+Oppdrag ||--o| Tildeling : bemannes_av
+Tildeling ||--o| Sluttattest : dokumenteres_i
+
+@enduml
