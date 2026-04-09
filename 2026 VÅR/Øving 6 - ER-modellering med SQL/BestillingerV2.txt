@@ -12,5 +12,5 @@ Produksjon:
 Arbeidsstasjon(__nummer__, plassering: tekst)
 Deltype(__delnummer__, navn, farge, pris, beskrivelse, stoffbehov_meter, er_stoff: bool, Arbeidsstasjon.nummer*)
 Spesialmodell_del(__Stolmodell.modell*__, __Deltype.delnummer*__, antall_per_stol)
-Stoffrull(__id__, Deltype.delnummer*, rullnummer, meter_igjen)                          // Må peke på en Deltype der er_stoff=true
+Stoffrull(__Deltype.delnummer*__, __rullnummer__, meter_igjen)                          // Må peke på en Deltype der er_stoff=true
 Ordrelinje_stoffrull(__Ordrelinje.id*__, Stoffrull.id*, meter_reservert)
