@@ -1,0 +1,14 @@
+Bestillinger:
+Ordre(__ordrenummer__, ordredato, leveringsdato, rabatt, betalingsstatus: tekstfelt, LISTE(StandardStol*), LISTE(SpesialStol*)	
+Kunde(__kundenummer__, navn, addresse, LISTE(Ordre*))
+StandardStol(__ordre*__, antall, modell, modellnavn, stoltype)
+SpesialStol(__ordre*__, antall, modell, modellnavn, stoltype, LISTE(Stoldel*))
+
+Lager:
+StandardStol(__modell__, pris, beholdning)
+
+Produksjon:
+Arbeidsstasjon(__nummer__, plassering: tekstfelt, LISTE(stoldel*)
+Stoldel(__delnummer__, deltype, antall, navn, farge, pris, beskrivelse, stoffbehov, Stoff*)
+Stoff(__delnummer__, deltype, antall, navn, farge, pris, beskrivelse, Stoffrull*)
+Stoffrull(__Stoff*__, deltypenummer, rullnummer, meter)

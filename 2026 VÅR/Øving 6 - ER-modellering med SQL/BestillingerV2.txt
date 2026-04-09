@@ -1,0 +1,16 @@
+Bestillinger:
+Kunde(__kundenummer__, navn, adresse)
+Ordre(__ordrenummer__, Kunde.kunde_id*, ordredato, antatt_leveringsdato, reell_leveringsdato, rabatt, betalingsstatus: tekstfelt)
+Stolmodell(__modell__, modellnavn, stoltype, er_standard: bool)
+Ordrelinje(__id__, Ordre.ordrenummer*, Stolmodell.modell*, antall, Stolmodell.er_standard*)
+
+Lager:
+Standardmodell_lager(__Stolmodell.modell*__, pris, beholdning)
+Deltype_lager(__Deltype.delnummer*__, antall)
+
+Produksjon:
+Arbeidsstasjon(__nummer__, plassering: tekst)
+Deltype(__delnummer__, navn, farge, pris, beskrivelse, stoffbehov_meterm, er_stoff: bool, Arbeidsstasjon.nummer*)
+Spesialmodell_del(__Stolmodell.modell*__, __Deltype.delnummer*__, antall_per_stol)
+Stoffrull(__id__, Deltype.delnummer*, rullnummer, meter_igjen)                          // Må peke på en Deltype der er_stoff=true
+Ordrelinje_stoffrull(__Ordrelinje.id*__, Stoffrull.id*, meter_reservert)
