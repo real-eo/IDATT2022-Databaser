@@ -1,0 +1,47 @@
+@startuml oppgave a
+class Kandidat {
+  kandidatnr : int
+  fornavn : varchar
+  etternavn : varchar
+  telefon : varchar
+  epost : varchar
+}
+
+class Bedrift {
+  orgnr : varchar
+  navn : varchar
+  telefon : varchar
+  epost : varchar
+}
+
+class Kvalifikasjon {
+  kvalifikasjonsnr : int
+  beskrivelse : varchar
+}
+
+class Oppdrag {
+  oppdragsnr : int
+  startdato_plan : date
+  sluttdato_plan : date
+}
+
+class Tildeling {
+  virkelig_startdato : date
+  virkelig_sluttdato : date
+  timer_arbeidet : decimal
+}
+
+class Sluttattest {
+  attestnr : int
+  tekstmal : text
+}
+
+' Relasjoner
+Bedrift "1" -- "0..*" Oppdrag
+Kvalifikasjon "1" -- "0..*" Oppdrag
+Kandidat "0..*" -- "0..*" Kvalifikasjon
+Oppdrag "1" -- "0..1" Tildeling
+Kandidat "1" -- "0..*" Tildeling
+Tildeling "1" -- "0..1" Sluttattest
+
+@enduml
