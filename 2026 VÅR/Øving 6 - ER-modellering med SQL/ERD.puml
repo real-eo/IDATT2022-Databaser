@@ -100,17 +100,19 @@ entity "**Ordrelinje_stoffrull**" as ordrelinje_stoffrull {
 }
 
 ' * RELASJONER
-kunde "    0..*\n \n▲\ntilhører " -down- "1..1" ordre : "\n legger\n▼"
+kunde "    0..*\n \n▲\ntilhører " -down- "1..1 " ordre : "\n legger\n▼"
 ordre "         1..*\n \n▲\ninneholder " -down- "1..1" ordrelinje : "\n består av\n▼"
-ordrelinje "          1..1\n \n▲\nrefererer til " -left- "1..1" stolmodell : "\n gjelder for\n▼"
-stolmodell "         0..*\n \n▲\nkan være " -down- "0..1" standardmodell_lager : "\n har\n▼"
-deltype_lager "         1..*\n \n▲\nrefererer til " -right- "1..1" deltype : "\n gjelder for\n▼"
+ordrelinje "                1..1\n◀ refererer til  " -left- "1..1" stolmodell : "\n gjelder for ▶"
+stolmodell "      0..1   \n\n\n\n\n  ◥\nhar  " -down- "0..*" standardmodell_lager : "kan være    \n◣                \n\n"
+deltype_lager "1..*              \n◀ refererer til" -right- "1..1" deltype : "\n gjelder for ▶"
 deltype "         0..*\n \n▲\nkan produseres ved " -down- "1..1" arbeidsstasjon : "\n produseres ved\n▼"
-stolmodell "         1..1\n \n▲\nrefererer til " -down- "1..1" spesialmodell_del : "\n gjelder for\n▼"
-spesialmodell_del "         1..1\n \n▲\nrefererer til " -down- "1..1" deltype : "\n gjelder for\n▼"
-deltype "         0..*\n \n▲\nkan være " -up- "0..1" stoffrull : "\n har\n▼"
-stoffrull "         0..*\n \n▲\nkan være " -up- "0..1" ordrelinje_stoffrull : "\n kan være\n▼"
-ordrelinje "         0..*\n \n▲\nkan ha " -down- "0..1" ordrelinje_stoffrull : "\n har\n▼"
+stolmodell "1..1            \n\n        refererer til\n         ◢" -down- "1..1   " spesialmodell_del : "\n\n\n ◤\n   gjelder for"
+spesialmodell_del "\t\t\t\t\t1..1\n\n\t\t\t\t\t◤\n\t\t\t\t\trefererer til" -down- "1..1\t" deltype : "\ngjelder for      \n◢    "
+deltype "\n\t  ◥\n     kan være\n\n         0..*" -up- " 0..1\n" stoffrull : "\n har\n◣     "
+stoffrull "▲\nkan være \n\n\n      0..*" -up- "0..1 " ordrelinje_stoffrull : "\n kan være\n▼"
+
+ordrelinje "0..*        \n kan ha ▶" -right- "0..1" ordrelinje_stoffrull : "◀ har   "
+
 
 
 @enduml
