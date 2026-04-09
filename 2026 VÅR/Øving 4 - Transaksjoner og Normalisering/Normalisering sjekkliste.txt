@@ -1,0 +1,12 @@
+Normalization check:
+
+First Normal Form (1NF): Each attribute should contain only atomic values — no lists or sets. If a Member has multiple phone numbers, don’t store them as “555-1234, 555-5678” in one field. Create a separate MemberPhone entity instead.
+Second Normal Form (2NF): Every non-key attribute should depend on the entire primary key. If you have an OrderItem entity with a composite key (order_id, product_id), don’t store product_name in OrderItem — it depends only on product_id. Keep product_name in the Product entity.
+Third Normal Form (3NF): Attributes should depend only on the primary key, not on other non-key attributes. Don’t store both city and state_name in an Address entity if you also store zip_code — the state can be derived from the zip code.
+Validation checklist:
+
+Does every entity have a primary key? ✓
+Are all relationships necessary and correctly defined? ✓
+Are cardinality notations accurate? ✓
+Can the structure support all required queries? ✓
+Are there any many-to-many relationships that need junction tables? ✓

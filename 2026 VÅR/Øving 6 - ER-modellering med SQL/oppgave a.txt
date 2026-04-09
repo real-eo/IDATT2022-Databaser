@@ -1,0 +1,7 @@
+borettslag(borettslag_id, navn, adresse, antall_enheter, etableringsaar)
+
+bygning(bygning_id, borettslag_id*, adresse, antall_etasjer, antall_leiligheter)
+
+leilighet(leilighet_id, bygning_id*, leilighetsnummer, antall_rom, antall_kvm, etasje, andelseier_id*)
+
+andelseier(andelseier_id, fornavn, etternavn, telefon, epost, fodselsdato)
