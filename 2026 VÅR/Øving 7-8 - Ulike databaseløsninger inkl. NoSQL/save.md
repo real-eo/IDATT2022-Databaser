@@ -1,14 +1,14 @@
-Nedenfor får du et komplett forslag som dekker hele caset (registrering av pakke, sporing/hendelser, og fortolling der tollhendelser kan ha “behandlingssted” som er ulik fysisk lokasjon). Jeg bruker MySQL-syntaks og viser både relasjonsmodell, joins, JSON-bruk og en MongoDB-dokumentmodell.
+Jeg bruker MySQL-syntaks og viser både relasjonsmodell, joins, JSON-bruk og en MongoDB-dokumentmodell.
 
 ---
 
-## 1.1 Relasjonsdatabase (SQL) – forslag til datamodell
+## 1.1 Relasjonsdatabase (SQL) - forslag til datamodell
 
 ### Grunntanke / hva må modellen støtte?
 - **Pakke** med unikt sporingsnummer, vekt, avsender, mottaker.
 - **Hendelser** som bygges opp over tid: tidspunkt, status, lokasjon.
 - **Tollhendelser** som er hendelser, men med *viktig detalj*: tollbehandlingssted kan være et annet sted enn hvor pakken fysisk er.
-- Sporing: finne pakke på sporingsnummer og vise full historikk.
+- **Sporing**: finne pakke på sporingsnummer og vise full historikk.
 
 ### Tabeller (minst 4) og relasjoner
 Jeg foreslår 5 tabeller:
@@ -17,15 +17,15 @@ Jeg foreslår 5 tabeller:
 2) `address` (adresse knyttet til en aktør)  
 3) `package` (pakke + tracking number, vekt, kobling til avsender/mottaker)  
 4) `location` (steder/terminaler/land/by)  
-5) `package_event` (alle hendelser – både logistikk og toll)
+5) `package_event` (alle hendelser - både logistikk og toll)
 
 **Hvorfor én hendelsestabell?**  
 Det gjør historikk og sortering enkelt: én tidslinje per pakke. Toll vs ikke-toll løses med `event_type` og ekstra felt for toll.
 
 ---
 
-### SQL (CREATE TABLE) – skisse
-> Du *kan* levere bare skisse, men dette er “implementerbar” MySQL.
+### SQL (CREATE TABLE) - skisse
+> Du *kan* levere bare skisse, men dette er "implementerbar" MySQL.
 
 ```sql
 CREATE TABLE party (
@@ -60,7 +60,7 @@ CREATE TABLE package (
 
 CREATE TABLE location (
   location_id    BIGINT PRIMARY KEY AUTO_INCREMENT,
-  name           VARCHAR(200) NOT NULL,   -- f.eks. "Oslo Terminal", "Hamburg Hub"
+  name           VARCHAR(200) NOT NULL,                               -- f.eks. "Oslo Terminal", "Hamburg Hub"
   city           VARCHAR(100),
   country_code   CHAR(2) NOT NULL
 );
@@ -69,7 +69,7 @@ CREATE TABLE package_event (
   event_id                    BIGINT PRIMARY KEY AUTO_INCREMENT,
   package_id                  BIGINT NOT NULL,
   occurred_at                 DATETIME NOT NULL,
-  status                      VARCHAR(80) NOT NULL,  -- "registrert", "under transport", ...
+  status                      VARCHAR(80) NOT NULL,                   -- "registrert", "under transport", ...
   event_type                  ENUM('LOGISTICS','CUSTOMS') NOT NULL,
 
   -- Fysisk lokasjon: hvor pakken faktisk er/ble skannet
@@ -88,7 +88,7 @@ CREATE TABLE package_event (
 );
 ```
 
-**Viktig caset-detalj (toll vs fysisk sted):**
+**Viktig case-detalj (toll vs fysisk sted):**
 - For vanlige hendelser: `event_type='LOGISTICS'`, bruk typisk `physical_location_id`.
 - For tollhendelser: `event_type='CUSTOMS'`, *kan* ha:
   - `processing_location_id = Oslo` (toll behandles digitalt i Norge)
@@ -111,7 +111,7 @@ CREATE TABLE package_event (
 
 ---
 
-### Minst 3 SQL-spørringer med JOIN (mot minst to tabeller)
+### Minst 3 SQL-spørringer med JOIN
 
 #### Spørring 1: Finn pakke på sporingsnummer + avsender og mottaker
 ```sql
@@ -145,7 +145,7 @@ WHERE p.tracking_number = 'P123'
 ORDER BY e.occurred_at;
 ```
 
-#### Spørring 3: Finn alle pakker som “venter på dokumentasjon” i toll – men hvor fysisk lokasjon er i utlandet
+#### Spørring 3: Finn alle pakker som "venter på dokumentasjon" i toll - men hvor fysisk lokasjon er i utlandet
 ```sql
 SELECT
   p.tracking_number,
@@ -165,20 +165,20 @@ ORDER BY e.occurred_at DESC;
 
 ---
 
-### Kort oppsummering (erfaringer + videre arbeid)
+### Erfaringer og videre arbeid
 - **Lett å spørre på historikk:** Én hendelsestabell (`package_event`) gjør tidslinje-spørringer veldig enkle.
-- **Joinene er overkommelige:** Typisk 2–4 tabeller per spørring (pakke + hendelser + lokasjon + parter).
+- **Joinene er overkommelige:** Typisk 2-4 tabeller per spørring (pakke + hendelser + lokasjon + parter).
 - **Videre arbeid (forbedringer):**
-  - Normalisere `status` til egen tabell eller ENUM for konsistens (unngå skrivefeil i `"levert"` osv.).
-  - Legge på “current_status/current_location” i `package` for raskere oppslag (denormalisering) + triggere/oppdateringslogikk.
-  - Mer avansert adressemodell (historikk, flere adresser per aktør, validering).
+  - Normalisere `status` til egen tabell eller ENUM for å holdet det konsekvent (unngå skrivefeil i `"levert"` ol.).
+  - Legge på "current_status/current_location" i `package` for raskere oppslag, altså denormalisering, i tillegg til triggere/oppdateringslogikk.
+  - Mer avansert adressemodell med f.eks historikk, flere adresser per aktør, validering.
 
 ---
 
 ## 1.2 Løsning med JSON i MySQL
 
 ### Hva kan egne seg som JSON i dette caset?
-Typisk “varierende” data:
+Typisk "varierende" data:
 - Tollmetadata kan variere (dokumentkrav, referansenummer, varer, HS-koder).
 - Ekstra skannedata/hendelsesmetadata (temperatur, signaturinfo, transportørkode, etc.)
 
@@ -221,30 +221,30 @@ ORDER BY e.occurred_at;
 ### Fordeler og ulemper med JSON her
 **Fordeler**
 - Fleksibelt for data som varierer mye mellom hendelser (spesielt toll).
-- Mindre behov for mange “små-tabeller” for sjeldne felter.
+- Mindre behov for mange "små-tabeller" for sjeldne felter.
 - Rask å utvide med nye attributter uten migrering av mange tabeller.
 
 **Ulemper**
 - Vanskeligere å håndheve datakvalitet (f.eks. obligatoriske felter i JSON).
 - Mer komplisert å indeksere og optimalisere spørringer (selv om MySQL støtter funksjonsindekser/JSON-indekser i noen scenarier).
-- Mindre “relasjonell” spørring (JOIN på JSON-felt er typisk dårlig idé).
+- Mindre "relasjonell" spørring (JOIN på JSON-felt er typisk dårlig idé).
 
 ---
 
-## 1.3 NoSQL-vurdering (generelt) + MongoDB egnethet
+## 1.3 NoSQL-vurdering og MongoDB egnethet
 
 ### Generelt om NoSQL som alternativ
 **Passer bra hvis:**
-- Du vil modellere en pakke som ett aggregat (“én pakke = ett dokument”) med innebygd hendelsesliste.
+- Du vil modellere en pakke som ett aggregat ("én pakke = ett dokument") med innebygd hendelsesliste.
 - Du oftest leser hele historikken for én pakke av gangen (typisk tracking-oppslag).
 - Skjemaet kan variere (spesielt toll-data og forskjellige event-typer).
 
 **Passer dårligere hvis:**
-- Du trenger mye rapportering på tvers (f.eks. “alle pakker i region X med status Y siste 24 timer” med tunge joins/aggregater).
+- Du trenger mye rapportering på tvers (f.eks. "alle pakker i region X med status Y siste 24 timer" med tunge joins/aggregater).
 - Du trenger sterke referanse-integritetskrav (FK-regler) og normalisering.
 
-### Hvor bra er MongoDB (dokumentdatabase) egnet?
-**Veldig egnet** for “sporing per sporingsnummer”:
+### Hvor bra er MongoDB egnet?
+**Veldig egnet** for "sporing per sporingsnummer":
 - Ett dokument per pakke med en `events[]`-array gir rask lesing av historikk.
 - Toll-hendelser kan ha egne underfelt som varierer uten å endre skjema.
 
@@ -252,7 +252,7 @@ ORDER BY e.occurred_at;
 
 ---
 
-## 1.4 MongoDB – ett dokument (JSON) for én spesifikk pakke
+## 1.4 MongoDB - ett dokument (JSON) for én spesifikk pakke
 
 Under er et forslag til **ett** dokument som inneholder det samme som i relasjonsmodellen (pakke + avsender/mottaker + hendelser + både fysisk og behandlingssted + toll-detaljer).
 
@@ -349,9 +349,3 @@ Under er et forslag til **ett** dokument som inneholder det samme som i relasjon
   ]
 }
 ```
-
----
-
-Hvis du vil, kan jeg også:
-- forenkle teksten så den passer direkte inn i en innlevering (mer “rapport-format”),
-- eller lage et lite ER-diagram i tekstform (crow’s foot-beskrivelse) basert på tabellene over.
